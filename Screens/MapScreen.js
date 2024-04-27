@@ -1,19 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import { createStackNavigator } from '@react-navigation/stack';
+import Map from '../Pages/Map';
+
+
+
+const Stack = createStackNavigator();
 
 export default function MapsScreen() {
   return (
-    <MapView
-      provider={PROVIDER_GOOGLE} // Specify Google Maps as the provider
-      style={styles.map}
-      initialRegion={{
-        latitude: 38.5449,
-        longitude: -121.7405,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }}
-    />
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Map" component={Map} />
+    </Stack.Navigator>
   );
 }
 
