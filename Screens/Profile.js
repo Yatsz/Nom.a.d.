@@ -1,15 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Login from './Screens/Login';
-import NavBar from './Nav/NavBar';
 
-export default function App() {
+export default function Profile() {
   return (
-    <NavBar />
+    <View style={styles.container}>
+      <Text>Profile!</Text>
+    </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
