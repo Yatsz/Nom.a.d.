@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { GluestackUIProvider, Button, ButtonText } from "@gluestack-ui/themed"
 import { config } from "@gluestack-ui/config"
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
 
 const svgIcon = `<svg width="95" height="89" viewBox="0 0 95 89" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -19,6 +21,17 @@ const googleIcon =`<svg width="30" height="29" viewBox="0 0 30 29" fill="none" x
 </svg>
 `
 
+async function onGoogleButtonPress() {
+  // Get the users ID token
+  const { idToken } = await GoogleSignin.signIn();
+
+  // Create a Google credential with the token
+  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+  // Sign-in the user with the credential
+  return auth().signInWithCredential(googleCredential);
+}
+
 export default function Login() {
   return (
     <GluestackUIProvider config={config}>
@@ -26,7 +39,7 @@ export default function Login() {
         <SvgXml xml={svgIcon} width="132.5" height="120.98" style={styles.icon} />
         <Text style={styles.text}>nom.a.d.</Text>
         <Text style={styles.small}>no more are displaced</Text>
-        <Button style={styles.button}>
+        <Button style={styles.button} onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}>
           <SvgXml xml={googleIcon} width="28.38" height="28.38" style={styles.google} />
           <Text style={styles.textTwo}>Login with Google</Text>
         </Button>

@@ -17,14 +17,18 @@
     "ios": {
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyAR7ayLlg8uWLKn1xJRVSZWJkCGry_-HeM"
-      }
+        "googleMapsApiKey": "AIzaSyAR7ayLlg8uWLKn1xJRVSZWJkCGry_-HeM",
+        "googleServicesFile": "./GoogleService-Info.plist"
+      },
+      "bundleIdentifier": "com.yatesz.nomad"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#ffffff",
+        "googleServicesFile": "./google-services.json"
+      },
+      "package": "com.yatesz.nomad"
     },
     "web": {
       "favicon": "./assets/favicon.png"

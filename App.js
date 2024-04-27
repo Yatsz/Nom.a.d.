@@ -7,7 +7,7 @@ import NavBar from './Nav/NavBar';
 
 export default function App() {
   return (
-    <NavBar />
+    <Login />
   );
 }
 
