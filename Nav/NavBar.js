@@ -1,43 +1,90 @@
 import React from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
+import MapsScreen from '../Screens/MapScreen';
+import Profile from '../Screens/Profile';
+import ShelterList from '../Screens/ShelterList';
+import pinIcon from "../assets/pinIcon.png"
+import homeIcon from '../assets/homeIcon.png'
+import profileIcon from '../assets/profileIcon.png'
+import pinIconSelected from '../assets/pinIconSelected.png'
+import homeIconSelected from '../assets/homeIconSelected.png'
+import profileIconSelected from '../assets/profileIconSelected.png'
 
 const Tab = createBottomTabNavigator();
 
 export default function NavBar() {
+
+
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{ headerShown: false }}>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Navigator 
+        screenOptions={{
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarStyle: {
+              backgroundColor: '#fff',
+              height: 100,
+              borderRadius: 25,
+              borderTopColor: '#fff',
+              ...styles.shadow
+            }
+          }}
+      >
+        <Tab.Screen name="Home" component={MapsScreen} options={{
+          tabBarIcon: ({focused}) => (
+            focused ? (
+              <View>
+                <Image source={pinIconSelected} style={{width: 25, height: 25}}/>
+              </View>
+            ) : (
+              <View>
+                <Image source={pinIcon} style={{width: 25, height: 25}}/>
+              </View>
+            )
+          )
+        }}/>
+        <Tab.Screen name="Profile" component={Profile} options={{
+          tabBarIcon: ({focused}) => (
+            focused ? (
+              <View>
+                <Image source={homeIconSelected} style={{width: 25, height: 25}}/>
+              </View>
+            ) : (
+              <View>
+                <Image source={homeIcon} style={{width: 25, height: 25}}/>
+              </View>
+            )
+          )
+        }}/>
+        <Tab.Screen name="Settings" component={ShelterList} options={{
+          tabBarIcon: ({focused}) => (
+            focused ? (
+              <View>
+                <Image source={profileIconSelected} style={{width: 25, height: 25}}/>
+              </View>
+            ) : (
+              <View>
+                <Image source={profileIcon} style={{width: 25, height: 25}}/>
+              </View>
+            )
+          )
+        }}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  shadow: {
+    shadowColor: "#7F5DF0",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  }
 });
