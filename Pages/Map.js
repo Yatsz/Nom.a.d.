@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Animated } from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { createStackNavigator } from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -9,28 +9,67 @@ import { useState, useEffect } from 'react';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import animalPin from '../assets/animalPin.png'
 import homelessPin from '../assets/homelessPin.png'
+import petShelter from '../assets/petShelter.png'
+import homelessShelter from '../assets/homeLessShelter.png'
+import { collection, doc, setDoc, getDocs, addDoc } from "firebase/firestore";
+import {auth, db} from "../FirebaseConfig";
+import {BlurView} from 'expo-blur'
+import pinsData from '../assets/pins.json'
 
+const ScaleInView = (props) => {
+    const [scaleAnim] = useState(new Animated.Value(0))  // Initial value for scale: 0
+  
+    useEffect(() => {
+      Animated.spring(
+        scaleAnim,
+        {
+          toValue: 1,
+          friction: 10,
+          duration: 0,
+          useNativeDriver: true,
+        }
+      ).start();
+    }, [])
+  
+    return (
+      <Animated.View                 // Special animatable View
+        style={{
+          ...props.style,
+          transform: [{scale: scaleAnim}]
+        }}
+      >
+        {props.children}
+      </Animated.View>
+    );
+  }
 
-
-export default function Map({ navigation }) {
+export default function Map({ navigation, route }) {
 
     
 
-    const [pins, setPins] = useState([
-        {
-            latitude: 38.5449,
-            longitude: -121.7405,
-            type: 'animal'
-        },
-        {
-            latitude: 38.5439,
-            longitude: -121.7405,
-            type: 'homeless'
+    const [pins, setPins] = useState(pinsData);
+
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async() => {
+        
+            setLoading(true);
+            const colRef = collection(db, "pins");
+            const docsSnap = await getDocs(colRef);
+            let temp = [...pins];
+            docsSnap.forEach(doc => {
+                temp.push(doc.data());
+            })
+            //console.log(temp)
+            setPins(temp);
+            setLoading(false)
         }
-    ]);
+
+        fetchData();
+    }, [])
 
     const [addPopup, setAddPopup] = useState(false);
-    const [addingPin, setAddingPin] = useState(false);
 
     const openAdd = () => {
         setAddPopup(true);
@@ -42,6 +81,7 @@ export default function Map({ navigation }) {
 
   return (
     <>
+        
         <MapView
             provider={PROVIDER_GOOGLE} // Specify Google Maps as the provider
             style={styles.map}
@@ -68,7 +108,7 @@ export default function Map({ navigation }) {
                         
                     >
                         <Image
-                            source={pin.type == "animal" ? animalPin : homelessPin}
+                            source={pin.type == "animal" ? animalPin : (pin.type == "petShelter" ? petShelter : (pin.type == "homelessShelter" ? homelessShelter : homelessPin))}
                             style={{width: 50, height: 50, resizeMode: 'contain'}}
                             resizeMode="contain"
                         />
@@ -76,6 +116,8 @@ export default function Map({ navigation }) {
                 ))
             }
         </MapView>
+
+        
 
         <TouchableOpacity onPress={openAdd} style={styles.addButton}>
             <Entypo
@@ -87,23 +129,32 @@ export default function Map({ navigation }) {
             <Text style={styles.buttonText}>Add Pin</Text>
         </TouchableOpacity>
         
-
         {addPopup &&
-            <View style={styles.addPopup}>
-                <TouchableWithoutFeedback onPress={closeAdd} style={{position: 'absolute', marginBottom: 200, backgroundColor: "#000"}}>
+        <>
+        <BlurView
+                    style={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                    }}
+                    intensity={10}
+                    tint="dark"
+                ></BlurView>
+            <ScaleInView style={styles.addPopup}>
+                <TouchableOpacity onPress={closeAdd} style={{marginLeft: "80%", marginBottom: "8%"}}>
                     <AntIcon
                         name='close'
                         size={20}
                         color="#000"
                         
                     />
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
                 <Text>Select the pin you would like to drop</Text>
                 <Text>to alert the nearest shelter.</Text>
                 <View style={styles.twoThings}>
                     <View style={styles.comb}>
                         <TouchableWithoutFeedback onPress={() => {
-                            navigation.navigate('NewPin', {type: 'person', setPins: setPins, pins: pins})
+                            navigation.navigate('NewPin', {type: 'person', setPins: setPins, pins: pins, email: route.params.email})
                             setAddPopup(false);
                         }}>
                             <Image source={homelessPin} style={styles.pins}/>
@@ -112,7 +163,7 @@ export default function Map({ navigation }) {
                     </View>
                     <View style={styles.comb}>
                         <TouchableWithoutFeedback onPress={() => {
-                            navigation.navigate('NewPin', {type: 'animal', setPins: setPins, pins: pins})
+                            navigation.navigate('NewPin', {type: 'animal', setPins: setPins, pins: pins, email: route.params.email})
                             setAddPopup(false);
                         }}>
                             <Image source={animalPin} style={styles.pins}/>
@@ -120,7 +171,8 @@ export default function Map({ navigation }) {
                         <Text>Animal</Text>
                     </View>
                 </View>
-            </View>
+            </ScaleInView>
+            </>
         }
     </>
   );
@@ -162,7 +214,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    paddingBottom: 20,
+    paddingX: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   addButton: {
     flex: 1,
@@ -174,7 +234,7 @@ const styles = StyleSheet.create({
     bottom: 30,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1d4ed8",
+    backgroundColor: "#68866B",
     borderRadius: 30,
     zIndex: 1,
     gap: 5,

@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Animated, TextInput, Keyboard } from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { createStackNavigator } from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -9,11 +9,42 @@ import { useState, useEffect } from 'react';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import animalPin from '../assets/animalPin.png'
 import homelessPin from '../assets/homelessPin.png'
+import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import uuid from 'react-native-uuid';
+import {auth, db} from "../FirebaseConfig";
+import {BlurView} from 'expo-blur'
 //import Geolocation from 'react-native-geolocation-service';
 
+const ScaleInView = (props) => {
+  const [scaleAnim] = useState(new Animated.Value(0))  // Initial value for scale: 0
 
+  useEffect(() => {
+    Animated.spring(
+      scaleAnim,
+      {
+        toValue: 1,
+        friction: 10,
+        duration: 0,
+        useNativeDriver: true,
+      }
+    ).start();
+  }, [])
+
+  return (
+    <Animated.View                 // Special animatable View
+      style={{
+        ...props.style,
+        transform: [{scale: scaleAnim}]
+      }}
+    >
+      {props.children}
+    </Animated.View>
+  );
+}
 
 export default function NewPin({ navigation, route }) {
+
+  const [sendPop, setSendPop] = useState(false);
 
     const [location, setLocation] = useState(
         {
@@ -21,6 +52,8 @@ export default function NewPin({ navigation, route }) {
             longitude: -121.7405
         }
     );
+
+    const [text, setText] = useState('');
 
     useEffect(() => {
         /*Geolocation.getCurrentPosition(
@@ -63,15 +96,33 @@ export default function NewPin({ navigation, route }) {
             </Marker>
         </MapView>
 
-        <TouchableOpacity onPress={() => {
+        <TouchableOpacity onPress={async() => {
+          setSendPop(true);
             let newLocation = {
                 latitude: location.latitude,
                 longitude: location.longitude,
                 type: route.params.type
             }
+            
+            let id = uuid.v4();
+            await setDoc(doc(db, "pins", id), {
+              latitude: location.latitude,
+              longitude: location.longitude,
+              type: route.params.type
+            })
+
+            let email = route.params.email
+
+            const docRef = doc(db, "users", email);
+            const docSnap = await getDoc(docRef);
+
+            let num = docSnap.data().pins
+            await updateDoc(doc(db, "users", route.params.email), {
+              pins: num + 1
+            })
             route.params.setPins([...route.params.pins, newLocation])
-            navigation.navigate('Map')
-        }} style={[styles.addButton, {backgroundColor: '#16a34a'}]} >
+            
+        }} style={[styles.addButton, {backgroundColor: '#81A484'}]} >
             <Text style={styles.buttonText}>Add Pin Here</Text>
             <Feather
                 name="check"
@@ -91,13 +142,75 @@ export default function NewPin({ navigation, route }) {
 
             />
         </TouchableOpacity>
+        {sendPop &&
+        <>
+        <BlurView
+                    style={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                    }}
+                    intensity={10}
+                    tint="dark"
+                ></BlurView>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+            <ScaleInView style={styles.addPopup}>
+              <Text style={{marginTop: 15, fontWeight: 'bold', fontSize: 30, alignSelf: 'left'}}>Congrats!</Text>
+                <Text style={{alignSelf: 'left', marginTop: 5}}>You just placed a pin to help shelters</Text>
+                <Text style={{alignSelf: 'left'}}>provide resources!</Text>
+                <TextInput
+                multiline
+                numberOfLines={5}
+                  style={{
+                    height: 40,
+                    margin: 12,
+                    borderWidth: 1,
+                    padding: 10,
+                    paddingTop: 12,
+                    borderColor: '#ccc',
+                    borderRadius: 5,
+                    width: 270,
+                    height: 100,
+                    alignItems: 'baseline'
+                  }}
+                  onChangeText={setText}
+                  value={text}
+                  placeholder="Write a note..."
+                  
+                />
 
+                <TouchableOpacity style={styles.submitButton} onPress={() => {
+                  setSendPop(false);
+                  navigation.navigate('Map');
+                }}>
+                  <Text style={{color: "#fff"}}>Submit</Text>
+                </TouchableOpacity>
+            </ScaleInView>
+            </TouchableWithoutFeedback>
+            </>
+        }
     </>
   );
 }
 
 
 const styles = StyleSheet.create({
+  submitButton: {
+    backgroundColor: "#506C53",
+    padding: 10,
+    borderRadius: 5,
+    width: 90,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3.84,
+    marginLeft: 180
+  },
   map: {
     flex: 1,
   },
@@ -132,7 +245,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   addButton: {
     flex: 1,

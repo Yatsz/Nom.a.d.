@@ -1,10 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Profile() {
+export default function Profile({route}) {
+
+  useEffect(() => {
+    console.log('email', route)
+  })
+
   return (
     <View style={styles.container}>
-      <Text>Profile!</Text>
+      <Text>{route.params.email}</Text>
     </View>
   );
 }
