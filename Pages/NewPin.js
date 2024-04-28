@@ -14,6 +14,7 @@ import uuid from 'react-native-uuid';
 import {auth, db} from "../FirebaseConfig";
 import {BlurView} from 'expo-blur'
 //import Geolocation from 'react-native-geolocation-service';
+import shelters from '../assets/data2.json'
 
 const ScaleInView = (props) => {
   const [scaleAnim] = useState(new Animated.Value(0))  // Initial value for scale: 0
@@ -54,6 +55,48 @@ export default function NewPin({ navigation, route }) {
     );
 
     const [text, setText] = useState('');
+
+    const haversineDistance = (coords1, coords2) => {
+      const toRadian = angle => (Math.PI / 180) * angle;
+      const earthRadius = 6371; // km
+
+      const dLat = toRadian(coords2.latitude - coords1.latitude);
+      const dLon = toRadian(coords2.longitude - coords1.longitude);
+
+      const lat1 = toRadian(coords1.latitude);
+      const lat2 = toRadian(coords2.latitude);
+
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return earthRadius * c;
+    };
+
+    const findClosestShelter = (pinLocation, shelters) => {
+      let closestShelter = null;
+      let minDistance = Infinity;
+
+      shelters.forEach(shelter => {
+        const distance = haversineDistance(pinLocation, shelter);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestShelter = shelter;
+        }
+      });
+
+      console.log("Closest Shelter:", closestShelter);
+      return closestShelter;
+    };
+
+    
+
+    const newPinLocation = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+    };
+
+
 
     useEffect(() => {
         /*Geolocation.getCurrentPosition(
@@ -121,6 +164,9 @@ export default function NewPin({ navigation, route }) {
               pins: num + 1
             })
             route.params.setPins([...route.params.pins, newLocation])
+
+            const closestShelter = findClosestShelter(newLocation, shelters);
+            console.log('Closest Shelter:', closestShelter);
             
         }} style={[styles.addButton, {backgroundColor: '#81A484'}]} >
             <Text style={styles.buttonText}>Add Pin Here</Text>
