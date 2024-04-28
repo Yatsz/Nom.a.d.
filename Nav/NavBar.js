@@ -21,12 +21,14 @@ export default function NavBar({route}) {
 
   const [email, setEmail] = useState(route.params.email)
   const [personName, setPersonName] = useState(route.params.name)
+  const [region, setRegion] = useState(route.params.region)
   
 
   useEffect(() => {
     setEmail(route.params.email)
     console.log(route.params)
     setPersonName(route.params.name)
+    setRegion(route.params.region)
   }, [])
 
   
@@ -45,7 +47,7 @@ export default function NavBar({route}) {
             }
           }}
       >
-        <Tab.Screen name="Home" component={MapsScreen} initialParams={{ email }} options={{
+        <Tab.Screen name="Home" component={MapsScreen} initialParams={{ email, region }} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>

@@ -12,14 +12,16 @@ const Stack = createStackNavigator();
 export default function MapsScreen({route}) {
 
   const [email, setEmail] = useState(route.params.email)
+  const [region, setRegion] = useState(route.params.region)
 
   useEffect(() => {
     setEmail(route.params.email)
+    setRegion(route.params.region)
   }, [])
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Map" initialParams={{email}} component={Map} />
+      <Stack.Screen name="Map" initialParams={{email, region}} component={Map} />
       <Stack.Screen name="NewPin" component={NewPin} />
     </Stack.Navigator>
   );

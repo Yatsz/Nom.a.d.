@@ -15,6 +15,7 @@ import {auth, db} from "../FirebaseConfig";
 import {BlurView} from 'expo-blur'
 import qs from 'qs';
 import Geocoder from 'react-native-geocoding'
+import * as Location from "expo-location";
 //import Geolocation from 'react-native-geolocation-service';
 
 const ScaleInView = (props) => {
@@ -50,8 +51,8 @@ export default function NewPin({ navigation, route }) {
 
     const [location, setLocation] = useState(
         {
-            latitude: 38.5449,
-            longitude: -121.7405
+            latitude: route.params.region.latitude,
+            longitude: route.params.region.longitude
         }
     );
 
@@ -95,16 +96,7 @@ export default function NewPin({ navigation, route }) {
     const [text, setText] = useState('');
 
     useEffect(() => {
-        /*Geolocation.getCurrentPosition(
-            position => {
-              setLocation(position.coords);
-            },
-            error => {
-              // See error code charts below.
-              console.log(error.code, error.message);
-            },
-            {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-          );*/
+        console.log(route.params.region)
     }, [])
 
   return (
@@ -112,12 +104,7 @@ export default function NewPin({ navigation, route }) {
         <MapView
             provider={PROVIDER_GOOGLE} // Specify Google Maps as the provider
             style={styles.map}
-            initialRegion={{
-                latitude: 38.5449,
-                longitude: -121.7405,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-            }}
+            region={route.params.region}
             showsUserLocation={true}
         >
             <Marker 
@@ -214,7 +201,7 @@ export default function NewPin({ navigation, route }) {
                   }}
                   onChangeText={setText}
                   value={text}
-                  placeholder="Write a note..."
+                  placeholder="Write a note to describe your pin... (situation, area, description)"
                   
                 />
 

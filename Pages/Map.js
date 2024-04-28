@@ -16,6 +16,7 @@ import { collection, doc, setDoc, getDocs, addDoc } from "firebase/firestore";
 import {auth, db} from "../FirebaseConfig";
 import {BlurView} from 'expo-blur'
 import pinsData from '../assets/pins.json'
+import * as Location from "expo-location";
 
 const ScaleInView = (props) => {
     const [scaleAnim] = useState(new Animated.Value(0))  // Initial value for scale: 0
@@ -66,10 +67,17 @@ export default function Map({ navigation, route }) {
         setLoading(false)
     }
 
-    useEffect(() => {
+    const [region, setRegion] = useState(route.params.region)
 
+    useEffect(() => {
+        setRegion(route.params.region)
         fetchData();
     })
+
+    useEffect(() => {
+        
+        
+    }, [])
 
     const [addPopup, setAddPopup] = useState(false);
 
@@ -85,14 +93,10 @@ export default function Map({ navigation, route }) {
     <>
         
         <MapView
+            ref={map => {this.map = map}}
             provider={PROVIDER_GOOGLE} // Specify Google Maps as the provider
             style={styles.map}
-            initialRegion={{
-                latitude: 38.5449,
-                longitude: -121.7405,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-            }}
+            region={region}
             showsMyLocationButton={true}
             followsUserLocation={true}
             showsCompass={true}
@@ -167,7 +171,7 @@ export default function Map({ navigation, route }) {
                 <View style={styles.twoThings}>
                     <View style={styles.comb}>
                         <TouchableWithoutFeedback onPress={() => {
-                            navigation.navigate('NewPin', {type: 'person', setPins: setPins, pins: pins, email: route.params.email})
+                            navigation.navigate('NewPin', {type: 'person', setPins: setPins, pins: pins, email: route.params.email, region: region})
                             setAddPopup(false);
                         }}>
                             <Image source={homelessPin} style={styles.pins}/>
@@ -176,7 +180,7 @@ export default function Map({ navigation, route }) {
                     </View>
                     <View style={styles.comb}>
                         <TouchableWithoutFeedback onPress={() => {
-                            navigation.navigate('NewPin', {type: 'animal', setPins: setPins, pins: pins, email: route.params.email})
+                            navigation.navigate('NewPin', {type: 'animal', setPins: setPins, pins: pins, email: route.params.email, region: region})
                             setAddPopup(false);
                         }}>
                             <Image source={animalPin} style={styles.pins}/>

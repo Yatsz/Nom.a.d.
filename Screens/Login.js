@@ -15,6 +15,7 @@ import {auth, db} from "../FirebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useEffect, useState } from 'react';
 import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
+import * as Location from "expo-location";
 
 
 const svgIcon = `<svg width="95" height="89" viewBox="0 0 95 89" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -62,11 +63,33 @@ export default function Login({navigation}) {
     
   }
 
+
+
+  const finder = async() => {
+    let {status} = await Location.requestForegroundPermissionsAsync();
+    
+    if(status == 'granted') {
+        console.log("perms")
+    }
+
+    const loc = await Location.getCurrentPositionAsync();
+    console.log(loc)
+    let reg = {
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01
+    }
+    return reg;
+  };
+
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, async(user) => {
       if(user) {
         await addUser(user.email);
-        navigation.navigate('Tabs', {email: user.email, name: user.displayName})
+        let reg = await finder();
+        console.log(reg)
+        navigation.navigate('Tabs', {email: user.email, name: user.displayName, region: reg})
       } else {
         console.log("not logged in");
       }
@@ -74,6 +97,10 @@ export default function Login({navigation}) {
       return () => unSub();
     })
   }, [])
+
+  
+        
+    
 
   return (
       <View style={styles.container}>
