@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Animated } from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { createStackNavigator } from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -16,7 +16,32 @@ import {auth, db} from "../FirebaseConfig";
 import {BlurView} from 'expo-blur'
 import pinsData from '../assets/pins.json'
 
-
+const ScaleInView = (props) => {
+    const [scaleAnim] = useState(new Animated.Value(0))  // Initial value for scale: 0
+  
+    useEffect(() => {
+      Animated.spring(
+        scaleAnim,
+        {
+          toValue: 1,
+          friction: 10,
+          duration: 0,
+          useNativeDriver: true,
+        }
+      ).start();
+    }, [])
+  
+    return (
+      <Animated.View                 // Special animatable View
+        style={{
+          ...props.style,
+          transform: [{scale: scaleAnim}]
+        }}
+      >
+        {props.children}
+      </Animated.View>
+    );
+  }
 
 export default function Map({ navigation, route }) {
 
@@ -104,7 +129,6 @@ export default function Map({ navigation, route }) {
             <Text style={styles.buttonText}>Add Pin</Text>
         </TouchableOpacity>
         
-        
         {addPopup &&
         <>
         <BlurView
@@ -112,12 +136,11 @@ export default function Map({ navigation, route }) {
                         position: "absolute",
                         width: "100%",
                         height: "100%",
-                        backgroundColor: "white",
                     }}
-                    intensity={50}
+                    intensity={10}
                     tint="dark"
                 ></BlurView>
-            <View style={styles.addPopup}>
+            <ScaleInView style={styles.addPopup}>
                 <TouchableOpacity onPress={closeAdd} style={{marginLeft: "80%", marginBottom: "8%"}}>
                     <AntIcon
                         name='close'
@@ -148,7 +171,7 @@ export default function Map({ navigation, route }) {
                         <Text>Animal</Text>
                     </View>
                 </View>
-            </View>
+            </ScaleInView>
             </>
         }
     </>
@@ -211,7 +234,7 @@ const styles = StyleSheet.create({
     bottom: 30,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1d4ed8",
+    backgroundColor: "#68866B",
     borderRadius: 30,
     zIndex: 1,
     gap: 5,

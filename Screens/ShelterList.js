@@ -42,6 +42,7 @@ function HomelessSheltersScreen() {
       <FlatList
         data={dataTwo}
         renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => String(index)}
       />
     </View>
@@ -107,6 +108,7 @@ function AnimalSheltersScreen() {
         data={data}
         renderItem={renderItem}
         keyExtractor={(item, index) => String(index)}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
