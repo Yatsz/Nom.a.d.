@@ -85,7 +85,6 @@ export default function NewPin({ navigation, route }) {
         }
       });
 
-      console.log("Closest Shelter:", closestShelter);
       return closestShelter;
     };
 
@@ -96,7 +95,7 @@ export default function NewPin({ navigation, route }) {
       longitude: location.longitude,
     };
 
-    
+
 
     useEffect(() => {
         /*Geolocation.getCurrentPosition(
@@ -166,7 +165,7 @@ export default function NewPin({ navigation, route }) {
             route.params.setPins([...route.params.pins, newLocation])
 
             const closestShelter = findClosestShelter(newLocation, shelters);
-            console.log('Closest Shelter:', closestShelter);
+            console.log('Closest Shelter:', closestShelter.houseName);
             
         }} style={[styles.addButton, {backgroundColor: '#81A484'}]} >
             <Text style={styles.buttonText}>Add Pin Here</Text>
