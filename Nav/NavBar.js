@@ -21,27 +21,15 @@ export default function NavBar({route}) {
 
   const [email, setEmail] = useState(route.params.email)
   const [personName, setPersonName] = useState(route.params.name)
-  const [pinCount, setPinCount] = useState(0)
+  
 
   useEffect(() => {
     setEmail(route.params.email)
-    console.log("HEHEHEHE")
     console.log(route.params)
     setPersonName(route.params.name)
   }, [])
 
-  const getPins = async() => {
-    const docRef = doc(db, "users", email);
-    const docSnap = await getDoc(docRef);
-
-    let num = docSnap.data().pins
-    setPinCount(num);
-    console.log(pinCount)
-  }
-
-  useEffect(() => {
-    getPins()
-  }, [])
+  
 
   return (
       <Tab.Navigator 
@@ -83,7 +71,7 @@ export default function NavBar({route}) {
             )
           )
         }}/>
-        <Tab.Screen name="Profile" component={Profile} initialParams={{ pinCount, personName }} options={{
+        <Tab.Screen name="Profile" component={Profile} initialParams={{ personName, email }} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>

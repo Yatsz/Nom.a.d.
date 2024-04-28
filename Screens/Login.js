@@ -51,10 +51,15 @@ export default function Login({navigation}) {
   }, [response])
 
   const addUser = async(userEmail) => {
-    await setDoc(doc(db, "users", userEmail), {
-      email: userEmail,
-      pins: 0
-    })
+    const docRef = doc(db, "users", userEmail);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
+        await setDoc(doc(db, "users", userEmail), {
+          email: userEmail,
+          pins: 0
+        })
+    } 
+    
   }
 
   useEffect(() => {

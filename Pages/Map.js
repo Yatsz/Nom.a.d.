@@ -69,7 +69,7 @@ export default function Map({ navigation, route }) {
     useEffect(() => {
 
         fetchData();
-    }, [])
+    })
 
     const [addPopup, setAddPopup] = useState(false);
 
