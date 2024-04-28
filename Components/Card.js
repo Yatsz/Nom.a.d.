@@ -1,5 +1,5 @@
 import React, { useState, useRef} from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Animated, Linking } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { DefaultTheme, Button} from 'react-native-paper';
 
@@ -33,7 +33,7 @@ const theme = {
     },
   };
 
-const Card = ({ houseName, address, openHours, description, imageUrl }) => {
+const Card = ({ houseName, address, openHours, description, imageUrl, donateLink, volunteerLink }) => {
 
     const [isExpanded, setIsExpanded] = useState(false);
     const expandedHeight = 130; // Example height in pixels.
@@ -78,7 +78,7 @@ const Card = ({ houseName, address, openHours, description, imageUrl }) => {
                 theme={theme}
                 style={styles.volunteer}
                 labelStyle={styles.volunteerLabel}
-                onPress={() => console.log('Pressed volunteer')}>
+                onPress={() => Linking.openURL(volunteerLink)}>
                 Volunteer
               </Button>
               <Button
@@ -87,7 +87,7 @@ const Card = ({ houseName, address, openHours, description, imageUrl }) => {
                 theme={themeTwo}
                 style={styles.donate}
                 labelStyle={styles.donateLabel}
-                onPress={() => console.log('Pressed donate')}>
+                onPress={() => Linking.openURL(donateLink)}>
                 Donate
               </Button>
               </View>

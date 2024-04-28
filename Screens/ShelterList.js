@@ -79,6 +79,8 @@ const AnimatedCard = ({ item, index }) => {
         openHours={item.openHours}
         description={item.description}
         imageUrl={item.image}
+        volunteerLink={item.volunteerLink}
+        donateLink={item.donateLink}
       />
       
         
