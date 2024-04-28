@@ -61,7 +61,7 @@ export default function Login({navigation}) {
     const unSub = onAuthStateChanged(auth, async(user) => {
       if(user) {
         await addUser(user.email);
-        navigation.navigate('Tabs', {email: user.email})
+        navigation.navigate('Tabs', {email: user.email, name: user.displayName})
       } else {
         console.log("not logged in");
       }

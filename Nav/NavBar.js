@@ -12,15 +12,35 @@ import profileIcon from '../assets/profileIcon.png'
 import pinIconSelected from '../assets/pinIconSelected.png'
 import homeIconSelected from '../assets/homeIconSelected.png'
 import profileIconSelected from '../assets/profileIconSelected.png'
+import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import {auth, db} from "../FirebaseConfig";
 
 const Tab = createBottomTabNavigator();
 
 export default function NavBar({route}) {
 
   const [email, setEmail] = useState(route.params.email)
+  const [personName, setPersonName] = useState(route.params.name)
+  const [pinCount, setPinCount] = useState(0)
 
   useEffect(() => {
     setEmail(route.params.email)
+    console.log("HEHEHEHE")
+    console.log(route.params)
+    setPersonName(route.params.name)
+  }, [])
+
+  const getPins = async() => {
+    const docRef = doc(db, "users", email);
+    const docSnap = await getDoc(docRef);
+
+    let num = docSnap.data().pins
+    setPinCount(num);
+    console.log(pinCount)
+  }
+
+  useEffect(() => {
+    getPins()
   }, [])
 
   return (
@@ -50,7 +70,7 @@ export default function NavBar({route}) {
             )
           )
         }}/>
-        <Tab.Screen name="Profile" component={ShelterList} options={{
+        <Tab.Screen name="Shelters" initialParams={{ email }} component={ShelterList} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>
@@ -63,7 +83,7 @@ export default function NavBar({route}) {
             )
           )
         }}/>
-        <Tab.Screen name="Settings" component={Profile} initialParams={{ email }} options={{
+        <Tab.Screen name="Profile" component={Profile} initialParams={{ pinCount, personName }} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>

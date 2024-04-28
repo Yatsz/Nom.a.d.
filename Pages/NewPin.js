@@ -14,9 +14,6 @@ import uuid from 'react-native-uuid';
 import {auth, db} from "../FirebaseConfig";
 import {BlurView} from 'expo-blur'
 import qs from 'qs';
-//import { render } from '@react-email/render';
-//import nodemailer from 'nodemailer';
-import { Email } from './Email';
 //import Geolocation from 'react-native-geolocation-service';
 
 const ScaleInView = (props) => {

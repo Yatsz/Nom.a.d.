@@ -57,7 +57,7 @@ export default function Map({ navigation, route }) {
         setLoading(true);
         const colRef = collection(db, "pins");
         const docsSnap = await getDocs(colRef);
-        let temp = [...pins];
+        let temp = [...pinsData];
         docsSnap.forEach(doc => {
             temp.push(doc.data());
         })
