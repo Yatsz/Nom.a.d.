@@ -43,7 +43,7 @@ const Card = ({ houseName, address, openHours, description, imageUrl, donateLink
   const toggleExpansion = () => {
     Animated.timing(animationController, {
       toValue: isExpanded ? 0 : expandedHeight, // toggle between 0 and the height of the content
-      duration: 300,
+      duration: 0,
       useNativeDriver: false, // 'height' is not supported by the native animated module
     }).start();
 
@@ -55,7 +55,7 @@ const Card = ({ houseName, address, openHours, description, imageUrl, donateLink
     height: animationController, // directly use the animated value for height
   };
     return (
-        <View style={[styles.cardContainer, isExpanded && styles.expandedContainer]}>
+        <TouchableOpacity onPress={toggleExpansion} style={[styles.cardContainer, isExpanded && styles.expandedContainer]}>
         <View style={styles.topCard}>
             <View style={styles.imageContainer}>
                 <Image source={{ uri: imageUrl }} style={styles.image} />
@@ -99,10 +99,10 @@ const Card = ({ houseName, address, openHours, description, imageUrl, donateLink
       </Animated.View>
 
       {/* Arrow SVG at the bottom */}
-      <TouchableOpacity onPress={toggleExpansion} style={styles.arrowContainer}>
+      <View style={styles.arrowContainer}>
         <SvgXml xml={isExpanded ? arrowUp : arrow} width="24" height="24" />
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableOpacity>
     );
   
 }
