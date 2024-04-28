@@ -120,9 +120,9 @@ export default function ShelterList() {
     <Tab.Navigator style={styles.navigator} 
     screenOptions={({ route }) => ({
       tabBarIndicatorStyle: {
-        backgroundColor: '#1D4ED8', // Blue color for the indicator
+        backgroundColor: '#81A484', // Blue color for the indicator
       },
-      tabBarActiveTintColor: '#1D4ED8', // Blue color when tab is active
+      tabBarActiveTintColor: '#81A484', // Blue color when tab is active
       tabBarInactiveTintColor: '#737373', // Grey color when tab is inactive
       tabBarLabelStyle: { textTransform:'none' },
     })}
