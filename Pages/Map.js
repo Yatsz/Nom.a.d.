@@ -4,6 +4,7 @@ import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { createStackNavigator } from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo'
 import AntIcon from 'react-native-vector-icons/AntDesign'
+import Material from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from'react-native-vector-icons/Feather'
 import { useState, useEffect } from 'react';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
@@ -51,20 +52,21 @@ export default function Map({ navigation, route }) {
 
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async() => {
+    const fetchData = async() => {
         
-            setLoading(true);
-            const colRef = collection(db, "pins");
-            const docsSnap = await getDocs(colRef);
-            let temp = [...pins];
-            docsSnap.forEach(doc => {
-                temp.push(doc.data());
-            })
-            //console.log(temp)
-            setPins(temp);
-            setLoading(false)
-        }
+        setLoading(true);
+        const colRef = collection(db, "pins");
+        const docsSnap = await getDocs(colRef);
+        let temp = [...pins];
+        docsSnap.forEach(doc => {
+            temp.push(doc.data());
+        })
+        //console.log(temp)
+        setPins(temp);
+        setLoading(false)
+    }
+
+    useEffect(() => {
 
         fetchData();
     }, [])
@@ -127,6 +129,17 @@ export default function Map({ navigation, route }) {
                 style={{  }}
             />
             <Text style={styles.buttonText}>Add Pin</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => {
+            fetchData();
+        }} style={{position: 'absolute', alignSelf: "baseline", zIndex: 2, backgroundColor: "#000", borderRadius: 10, marginTop: "10%", width: 20, flex: 1, justifyContent: "center", alignItems: "center", marginLeft: "5%"}}>
+            <Material
+                name="reload"
+                size={20}
+                color="#fff"
+
+            />
         </TouchableOpacity>
         
         {addPopup &&

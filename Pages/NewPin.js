@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Animated, TextInput, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, Image, Animated, TextInput, Keyboard, Linking } from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { createStackNavigator } from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -13,6 +13,10 @@ import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import uuid from 'react-native-uuid';
 import {auth, db} from "../FirebaseConfig";
 import {BlurView} from 'expo-blur'
+import qs from 'qs';
+//import { render } from '@react-email/render';
+//import nodemailer from 'nodemailer';
+import { Email } from './Email';
 //import Geolocation from 'react-native-geolocation-service';
 
 const ScaleInView = (props) => {
@@ -52,6 +56,33 @@ export default function NewPin({ navigation, route }) {
             longitude: -121.7405
         }
     );
+
+    async function sendEmail(to, subject, body, options = {}) {
+      const { cc, bcc } = options;
+  
+      let url = `mailto:${to}`;
+  
+      // Create email link query
+      const query = qs.stringify({
+          subject: subject,
+          body: body,
+          cc: cc,
+          bcc: bcc
+      });
+  
+      if (query.length) {
+          url += `?${query}`;
+      }
+  
+      // check if we can use this link
+      const canOpen = await Linking.canOpenURL(url);
+  
+      if (!canOpen) {
+          throw new Error('Provided URL can not be handled');
+      }
+  
+      return Linking.openURL(url);
+  }
 
     const [text, setText] = useState('');
 
@@ -134,7 +165,7 @@ export default function NewPin({ navigation, route }) {
 
         <TouchableOpacity onPress={() => {
             navigation.navigate('Map');
-        }} style={{position: 'absolute', alignSelf: "left", zIndex: 2, backgroundColor: "#000", borderRadius: 10, marginTop: "10%", width: 20, flex: 1, justifyContent: "center", alignItems: "center", marginLeft: "5%"}}>
+        }} style={{position: 'absolute', alignSelf: "baseline", zIndex: 2, backgroundColor: "#000", borderRadius: 10, marginTop: "10%", width: 20, flex: 1, justifyContent: "center", alignItems: "center", marginLeft: "5%"}}>
             <AntIcon
                 name="arrowleft"
                 size={20}
@@ -155,9 +186,9 @@ export default function NewPin({ navigation, route }) {
                 ></BlurView>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
             <ScaleInView style={styles.addPopup}>
-              <Text style={{marginTop: 15, fontWeight: 'bold', fontSize: 30, alignSelf: 'left'}}>Congrats!</Text>
-                <Text style={{alignSelf: 'left', marginTop: 5}}>You just placed a pin to help shelters</Text>
-                <Text style={{alignSelf: 'left'}}>provide resources!</Text>
+              <Text style={{marginTop: 20, fontWeight: 'bold', fontSize: 30, alignSelf: 'left'}}>Pin Made!</Text>
+                <Text style={{alignSelf: 'baseline', marginTop: 5}}>You just placed a pin to help shelters</Text>
+                <Text style={{alignSelf: 'baseline'}}>provide resources!</Text>
                 <TextInput
                 multiline
                 numberOfLines={5}
@@ -179,7 +210,15 @@ export default function NewPin({ navigation, route }) {
                   
                 />
 
-                <TouchableOpacity style={styles.submitButton} onPress={() => {
+                <TouchableOpacity style={styles.submitButton} onPress={async() => {
+                  body = "Hello Team," + "\n" + text + "\n\n" + "Thank you so much!";
+                  await sendEmail(
+                    'superabhi20@gmail.com',
+                    'Help Needed!',
+                    body
+                ).then(() => {
+                    console.log('Our email successful provided to device mail ');
+                });
                   setSendPop(false);
                   navigation.navigate('Map');
                 }}>
@@ -236,7 +275,7 @@ const styles = StyleSheet.create({
   },
   addPopup: {
     position: 'absolute',
-    height: 250,
+    height: 270,
     width: 310,
     backgroundColor: "#fff",
     borderRadius: 10,

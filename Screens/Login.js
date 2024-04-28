@@ -59,7 +59,6 @@ export default function Login({navigation}) {
 
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, async(user) => {
-      console.log(user.email);
       if(user) {
         await addUser(user.email);
         navigation.navigate('Tabs', {email: user.email})
