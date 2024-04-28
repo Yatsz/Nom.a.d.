@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -15,8 +15,13 @@ import profileIconSelected from '../assets/profileIconSelected.png'
 
 const Tab = createBottomTabNavigator();
 
-export default function NavBar() {
+export default function NavBar({route}) {
 
+  const [email, setEmail] = useState(route.params.email)
+
+  useEffect(() => {
+    setEmail(route.params.email)
+  }, [])
 
   return (
       <Tab.Navigator 
@@ -58,7 +63,7 @@ export default function NavBar() {
             )
           )
         }}/>
-        <Tab.Screen name="Settings" component={Profile} options={{
+        <Tab.Screen name="Settings" component={Profile} initialParams={{ email }} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>

@@ -49,6 +49,19 @@ export default function Login({navigation}) {
     }
   }, [response])
 
+
+
+  useEffect(() => {
+    const unSub = onAuthStateChanged(auth, async(user) => {
+      console.log(user.email);
+      if(user) {
+        navigation.navigate('Tabs', {email: user.email})
+      } else {
+        console.log("not logged in");
+      }
+    })
+  }, [])
+
   return (
       <View style={styles.container}>
         <SvgXml xml={svgIcon} width="132.5" height="120.98" style={styles.icon} />
@@ -56,7 +69,6 @@ export default function Login({navigation}) {
         <Text style={styles.small}>no more are displaced</Text>
         <TouchableOpacity onPress={async() => {
           await promptAsync()
-          navigation.navigate('Tabs')
         }} style={styles.button}>
           <SvgXml xml={googleIcon} width="28.38" height="28.38" style={styles.google} />
           <Text style={styles.textTwo}>Login with Google</Text>
