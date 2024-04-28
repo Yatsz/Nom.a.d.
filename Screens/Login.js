@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { GluestackUIProvider, Button, ButtonText } from "@gluestack-ui/themed"
 import { config } from "@gluestack-ui/config"
@@ -83,13 +83,17 @@ export default function Login({navigation}) {
     return reg;
   };
 
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, async(user) => {
       if(user) {
+        setLoading(true)
         await addUser(user.email);
         let reg = await finder();
-        console.log(reg)
+        setLoading(false)
         navigation.navigate('Tabs', {email: user.email, name: user.displayName, region: reg})
+        
       } else {
         console.log("not logged in");
       }
@@ -103,6 +107,7 @@ export default function Login({navigation}) {
     
 
   return (
+    !loading ?
       <View style={styles.container}>
         <SvgXml xml={svgIcon} width="132.5" height="120.98" style={styles.icon} />
         <Text style={styles.text}>nomad</Text>
@@ -113,6 +118,10 @@ export default function Login({navigation}) {
           <SvgXml xml={googleIcon} width="28.38" height="28.38" style={styles.google} />
           <Text style={styles.textTwo}>Login with Google</Text>
         </TouchableOpacity>
+      </View>
+      :
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="#506C53"/>
       </View>
   );
 }
