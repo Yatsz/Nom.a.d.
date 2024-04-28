@@ -19,7 +19,6 @@ export default function NavBar() {
 
 
   return (
-    <NavigationContainer>
       <Tab.Navigator 
         screenOptions={{
             headerShown: false,
@@ -73,13 +72,12 @@ export default function NavBar() {
           )
         }}/>
       </Tab.Navigator>
-    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: "#7F5DF0",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
