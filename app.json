@@ -18,16 +18,20 @@
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyAR7ayLlg8uWLKn1xJRVSZWJkCGry_-HeM"
-      }
+      },
+      "bundleIdentifier": "com.anonymous.nomad"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.nomad"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "scheme": "com.googleusercontent.apps.105772593651-2tepdb024f148gc01ru6ssuhrcanhj5r"
   }
+
 }

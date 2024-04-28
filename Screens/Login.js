@@ -3,6 +3,17 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { GluestackUIProvider, Button, ButtonText } from "@gluestack-ui/themed"
 import { config } from "@gluestack-ui/config"
+import { TouchableOpacity } from 'react-native';
+import * as Google from "expo-auth-session/providers/google"
+import * as WebBrowser from "expo-web-browser";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential,
+} from "firebase/auth"
+import {auth} from "../FirebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { useEffect, useState } from 'react';
 
 
 const svgIcon = `<svg width="95" height="89" viewBox="0 0 95 89" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -19,19 +30,38 @@ const googleIcon =`<svg width="30" height="29" viewBox="0 0 30 29" fill="none" x
 </svg>
 `
 
-export default function Login() {
+
+WebBrowser.maybeCompleteAuthSession();
+
+export default function Login({navigation}) {
+
+  const [userInfo, setUserInfo] = useState();
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: '105772593651-2tepdb024f148gc01ru6ssuhrcanhj5r.apps.googleusercontent.com',
+    redirectUri: 'com.googleusercontent.apps.105772593651-2tepdb024f148gc01ru6ssuhrcanhj5r:/oauth2redirect',
+  });
+
+  useEffect(() => {
+    if(response?.type === "success") {
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(auth, credential)
+    }
+  }, [response])
+
   return (
-    <GluestackUIProvider config={config}>
       <View style={styles.container}>
         <SvgXml xml={svgIcon} width="132.5" height="120.98" style={styles.icon} />
         <Text style={styles.text}>nom.a.d.</Text>
         <Text style={styles.small}>no more are displaced</Text>
-        <Button style={styles.button}>
+        <TouchableOpacity onPress={async() => {
+          await promptAsync()
+          navigation.navigate('Tabs')
+        }} style={styles.button}>
           <SvgXml xml={googleIcon} width="28.38" height="28.38" style={styles.google} />
           <Text style={styles.textTwo}>Login with Google</Text>
-        </Button>
+        </TouchableOpacity>
       </View>
-    </GluestackUIProvider>
   );
 }
 
@@ -62,10 +92,20 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     marginTop: 65,
-    color: '#1A91FF',
+    backgroundColor: '#1A91FF',
     width: 312,
     height: 61,
     borderRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   }, google: {
     marginRight: 16,
   }, textTwo: {
