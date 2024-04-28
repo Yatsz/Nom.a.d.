@@ -16,7 +16,8 @@ import {BlurView} from 'expo-blur'
 import qs from 'qs';
 import Geocoder from 'react-native-geocoding'
 //import Geolocation from 'react-native-geolocation-service';
-import shelters from '../assets/data2.json'
+import homeless from '../assets/data2.json'
+import animals from '../assets/data.json'
 
 const ScaleInView = (props) => {
   const [scaleAnim] = useState(new Animated.Value(0))  // Initial value for scale: 0
@@ -46,7 +47,7 @@ const ScaleInView = (props) => {
 }
 
 export default function NewPin({ navigation, route }) {
-
+  const shelters = route.params.type == "animal" ? animals : homeless
   const [sendPop, setSendPop] = useState(false);
 
     const [location, setLocation] = useState(
@@ -94,6 +95,7 @@ export default function NewPin({ navigation, route }) {
   }, [location])
 
     const [text, setText] = useState('');
+    const [closest, setClosest] = useState('');
 
     const haversineDistance = (coords1, coords2) => {
       const toRadian = angle => (Math.PI / 180) * angle;
@@ -123,12 +125,13 @@ export default function NewPin({ navigation, route }) {
           closestShelter = shelter;
         }
       });
+      
 
       return closestShelter;
     };
 
     
-
+    
     const newPinLocation = {
       latitude: location.latitude,
       longitude: location.longitude,
@@ -204,7 +207,8 @@ export default function NewPin({ navigation, route }) {
             route.params.setPins([...route.params.pins, newLocation])
 
             const closestShelter = findClosestShelter(newLocation, shelters);
-            console.log('Closest Shelter:', closestShelter.houseName);
+            console.log(closestShelter.houseName)
+            setClosest(closestShelter.houseName)
             
         }} style={[styles.addButton, {backgroundColor: '#81A484'}]} >
             <Text style={styles.buttonText}>Add Pin Here</Text>
@@ -264,7 +268,7 @@ export default function NewPin({ navigation, route }) {
                 />
 
                 <TouchableOpacity style={styles.submitButton} onPress={async() => {
-                  body = "Hello Team," + "\n" + text + "\n\n" + "address of pin: " + address + "\n\n" + "Thank you so much!";
+                  body = "Hello Team at " + closest + ",\n" + text + "\n\n" + "address of pin: " + address + "\n\n" + "Thank you so much!";
                   await sendEmail(
                     'superabhi20@gmail.com',
                     'Help Needed!',
