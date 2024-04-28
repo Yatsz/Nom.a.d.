@@ -42,6 +42,7 @@ function HomelessSheltersScreen() {
       <FlatList
         data={dataTwo}
         renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => String(index)}
       />
     </View>
@@ -107,6 +108,7 @@ function AnimalSheltersScreen() {
         data={data}
         renderItem={renderItem}
         keyExtractor={(item, index) => String(index)}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -122,6 +124,7 @@ export default function ShelterList() {
       },
       tabBarActiveTintColor: '#1D4ED8', // Blue color when tab is active
       tabBarInactiveTintColor: '#737373', // Grey color when tab is inactive
+      tabBarLabelStyle: { textTransform:'none' },
     })}
   >
     <Tab.Screen
