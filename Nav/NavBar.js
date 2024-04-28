@@ -36,11 +36,11 @@ export default function NavBar() {
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>
-                <Image source={pinIconSelected} style={{width: 25, height: 25}}/>
+                <Image source={pinIconSelected} style={{width: 35, height: 35}}/>
               </View>
             ) : (
               <View>
-                <Image source={pinIcon} style={{width: 25, height: 25}}/>
+                <Image source={pinIcon} style={{width: 35, height: 35}}/>
               </View>
             )
           )
@@ -49,11 +49,11 @@ export default function NavBar() {
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>
-                <Image source={homeIconSelected} style={{width: 25, height: 25}}/>
+                <Image source={homeIconSelected} style={{width: 30, height: 30}}/>
               </View>
             ) : (
               <View>
-                <Image source={homeIcon} style={{width: 25, height: 25}}/>
+                <Image source={homeIcon} style={{width: 30, height: 30}}/>
               </View>
             )
           )
@@ -62,11 +62,11 @@ export default function NavBar() {
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>
-                <Image source={profileIconSelected} style={{width: 25, height: 25}}/>
+                <Image source={profileIconSelected} style={{width: 30, height: 30}}/>
               </View>
             ) : (
               <View>
-                <Image source={profileIcon} style={{width: 25, height: 25}}/>
+                <Image source={profileIcon} style={{width: 30, height: 30}}/>
               </View>
             )
           )
