@@ -1,5 +1,5 @@
 import {React, useEffect, useState} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Linking} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SvgXml } from 'react-native-svg';
 import { CurrentRenderContext } from '@react-navigation/native';
@@ -117,7 +117,7 @@ const Profile = ({route}) => {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.eventButton}>
+        <TouchableOpacity style={styles.eventButton} onPress={() => Linking.openURL('https://www.aggiehousedavis.org/donate')}>
           <Text style={styles.eventButtonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
@@ -141,7 +141,7 @@ const Profile = ({route}) => {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.eventButton}>
+        <TouchableOpacity style={styles.eventButton} onPress={() => Linking.openURL('https://www.heartsforpawsrescue.com/')}>
           <Text style={styles.eventButtonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
