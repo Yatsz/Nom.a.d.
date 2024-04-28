@@ -5,6 +5,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Login from './Screens/Login';
 import NavBar from './Nav/NavBar';
 import { createStackNavigator } from '@react-navigation/stack';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreAllLogs();
 
 const Stack = createStackNavigator();
 

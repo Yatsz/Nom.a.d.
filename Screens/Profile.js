@@ -1,9 +1,11 @@
-import {React, useState} from 'react';
+import {React, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SvgXml } from 'react-native-svg';
 import { CurrentRenderContext } from '@react-navigation/native';
 import Volunteer from '../Components/Volunteer';
+import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import {auth, db} from "../FirebaseConfig";
 
 
 
@@ -19,21 +21,28 @@ const Chipotle = `https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/Chipotle_
 
 const ihop = `https://images.crunchbase.com/image/upload/c_pad,h_256,w_256,f_auto,q_auto:eco,dpr_1/dhkhzpxnauyszjqw6jqr`
 
-const ProfileHeader = () => {
+const ProfileHeader = ({pin, name}) => {
+
+  let avatar = "";
+
+  let arr = name.split(" ")
+  console.log(arr)
+  avatar += arr[0][0] + arr[1][0];
+
   return (
     <View style={styles.headerContainer}>
       <View style={styles.avatarContainer}>
-        <Text style={styles.avatarText}>JD</Text>
+        <Text style={styles.avatarText}>{avatar}</Text>
       </View>
       <View style={styles.userInfo}>
-        <Text style={styles.userName}>John Doe</Text>
+        <Text style={styles.userName}>{name}</Text>
         <View style={styles.location}>
           <SvgXml xml={location} width="20" height="20" />
           <Text style={styles.userLocation}>Davis, CA 95616</Text>
         </View>
         <View style={styles.pinsContainer}>
         <Icon name="pin" size={20} color="#68866B" />
-        <Text style={styles.pinsText}>2 PINS</Text>
+        <Text style={styles.pinsText}>{pin} PINS</Text>
       </View>
       </View>
 
@@ -44,13 +53,13 @@ const ProfileHeader = () => {
 
 
 
-const Profile = () => {
+const Profile = ({route}) => {
 
   const [left, setLeft] = useState(true);
 
   return (
     <>
-    <ProfileHeader />
+    <ProfileHeader pin={route.params.pinCount} name={route.params.personName} />
     <View style={{marginTop: 50, flexDirection: 'row', justifyContent: 'center'}}>
       <TouchableOpacity onPress={() => {
         setLeft(true)
@@ -293,7 +302,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-  
+    marginLeft: -20,
     marginTop: 100,
   },
   location: {
@@ -333,7 +342,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontWeight: 'bold',
-    fontSize: 30,
+    fontSize: 27,
   },
   userLocation: {
     fontSize: 18,
