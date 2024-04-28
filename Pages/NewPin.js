@@ -16,6 +16,8 @@ import {BlurView} from 'expo-blur'
 import qs from 'qs';
 import Geocoder from 'react-native-geocoding'
 //import Geolocation from 'react-native-geolocation-service';
+import homeless from '../assets/data2.json'
+import animals from '../assets/data.json'
 
 const ScaleInView = (props) => {
   const [scaleAnim] = useState(new Animated.Value(0))  // Initial value for scale: 0
@@ -45,7 +47,7 @@ const ScaleInView = (props) => {
 }
 
 export default function NewPin({ navigation, route }) {
-
+  const shelters = route.params.type == "animal" ? animals : homeless
   const [sendPop, setSendPop] = useState(false);
 
     const [location, setLocation] = useState(
@@ -93,6 +95,49 @@ export default function NewPin({ navigation, route }) {
   }, [location])
 
     const [text, setText] = useState('');
+    const [closest, setClosest] = useState('');
+
+    const haversineDistance = (coords1, coords2) => {
+      const toRadian = angle => (Math.PI / 180) * angle;
+      const earthRadius = 6371; // km
+
+      const dLat = toRadian(coords2.latitude - coords1.latitude);
+      const dLon = toRadian(coords2.longitude - coords1.longitude);
+
+      const lat1 = toRadian(coords1.latitude);
+      const lat2 = toRadian(coords2.latitude);
+
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return earthRadius * c;
+    };
+
+    const findClosestShelter = (pinLocation, shelters) => {
+      let closestShelter = null;
+      let minDistance = Infinity;
+
+      shelters.forEach(shelter => {
+        const distance = haversineDistance(pinLocation, shelter);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestShelter = shelter;
+        }
+      });
+      
+
+      return closestShelter;
+    };
+
+    
+    
+    const newPinLocation = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+    };
+
+
 
     useEffect(() => {
         /*Geolocation.getCurrentPosition(
@@ -160,6 +205,10 @@ export default function NewPin({ navigation, route }) {
               pins: num + 1
             })
             route.params.setPins([...route.params.pins, newLocation])
+
+            const closestShelter = findClosestShelter(newLocation, shelters);
+            console.log(closestShelter.houseName)
+            setClosest(closestShelter.houseName)
             
         }} style={[styles.addButton, {backgroundColor: '#81A484'}]} >
             <Text style={styles.buttonText}>Add Pin Here</Text>
@@ -219,7 +268,7 @@ export default function NewPin({ navigation, route }) {
                 />
 
                 <TouchableOpacity style={styles.submitButton} onPress={async() => {
-                  body = "Hello Team," + "\n" + text + "\n\n" + "address of pin: " + address + "\n\n" + "Thank you so much!";
+                  body = "Hello Team at " + closest + ",\n" + text + "\n\n" + "address of pin: " + address + "\n\n" + "Thank you so much!";
                   await sendEmail(
                     'superabhi20@gmail.com',
                     'Help Needed!',
