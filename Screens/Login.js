@@ -11,9 +11,10 @@ import {
   onAuthStateChanged,
   signInWithCredential,
 } from "firebase/auth"
-import {auth} from "../FirebaseConfig";
+import {auth, db} from "../FirebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useEffect, useState } from 'react';
+import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
 
 
 const svgIcon = `<svg width="95" height="89" viewBox="0 0 95 89" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -49,16 +50,24 @@ export default function Login({navigation}) {
     }
   }, [response])
 
-
+  const addUser = async(userEmail) => {
+    await setDoc(doc(db, "users", userEmail), {
+      email: userEmail,
+      pins: 0
+    })
+  }
 
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, async(user) => {
       console.log(user.email);
       if(user) {
+        await addUser(user.email);
         navigation.navigate('Tabs', {email: user.email})
       } else {
         console.log("not logged in");
       }
+
+      return () => unSub();
     })
   }, [])
 

@@ -9,10 +9,12 @@ import { useState, useEffect } from 'react';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import animalPin from '../assets/animalPin.png'
 import homelessPin from '../assets/homelessPin.png'
+import { collection, doc, setDoc, getDocs, addDoc } from "firebase/firestore";
+import {auth, db} from "../FirebaseConfig";
 
 
 
-export default function Map({ navigation }) {
+export default function Map({ navigation, route }) {
 
     
 
@@ -29,8 +31,27 @@ export default function Map({ navigation }) {
         }
     ]);
 
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async() => {
+        
+            setLoading(true);
+            const colRef = collection(db, "pins");
+            const docsSnap = await getDocs(colRef);
+            let temp = [];
+            docsSnap.forEach(doc => {
+                temp.push(doc.data());
+            })
+            console.log(temp)
+            setPins(temp);
+            setLoading(false)
+        }
+
+        fetchData();
+    }, [])
+
     const [addPopup, setAddPopup] = useState(false);
-    const [addingPin, setAddingPin] = useState(false);
 
     const openAdd = () => {
         setAddPopup(true);
@@ -103,7 +124,7 @@ export default function Map({ navigation }) {
                 <View style={styles.twoThings}>
                     <View style={styles.comb}>
                         <TouchableWithoutFeedback onPress={() => {
-                            navigation.navigate('NewPin', {type: 'person', setPins: setPins, pins: pins})
+                            navigation.navigate('NewPin', {type: 'person', setPins: setPins, pins: pins, email: route.params.email})
                             setAddPopup(false);
                         }}>
                             <Image source={homelessPin} style={styles.pins}/>
@@ -112,7 +133,7 @@ export default function Map({ navigation }) {
                     </View>
                     <View style={styles.comb}>
                         <TouchableWithoutFeedback onPress={() => {
-                            navigation.navigate('NewPin', {type: 'animal', setPins: setPins, pins: pins})
+                            navigation.navigate('NewPin', {type: 'animal', setPins: setPins, pins: pins, email: route.params.email})
                             setAddPopup(false);
                         }}>
                             <Image source={animalPin} style={styles.pins}/>

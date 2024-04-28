@@ -37,7 +37,7 @@ export default function NavBar({route}) {
             }
           }}
       >
-        <Tab.Screen name="Home" component={MapsScreen} options={{
+        <Tab.Screen name="Home" component={MapsScreen} initialParams={{ email }} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>

@@ -9,6 +9,9 @@ import { useState, useEffect } from 'react';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import animalPin from '../assets/animalPin.png'
 import homelessPin from '../assets/homelessPin.png'
+import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import uuid from 'react-native-uuid';
+import {auth, db} from "../FirebaseConfig";
 //import Geolocation from 'react-native-geolocation-service';
 
 
@@ -63,12 +66,29 @@ export default function NewPin({ navigation, route }) {
             </Marker>
         </MapView>
 
-        <TouchableOpacity onPress={() => {
+        <TouchableOpacity onPress={async() => {
             let newLocation = {
                 latitude: location.latitude,
                 longitude: location.longitude,
                 type: route.params.type
             }
+            
+            let id = uuid.v4();
+            await setDoc(doc(db, "pins", id), {
+              latitude: location.latitude,
+              longitude: location.longitude,
+              type: route.params.type
+            })
+
+            let email = route.params.email
+
+            const docRef = doc(db, "users", email);
+            const docSnap = await getDoc(docRef);
+
+            let num = docSnap.data().pins
+            await updateDoc(doc(db, "users", route.params.email), {
+              pins: num + 1
+            })
             route.params.setPins([...route.params.pins, newLocation])
             navigation.navigate('Map')
         }} style={[styles.addButton, {backgroundColor: '#16a34a'}]} >
