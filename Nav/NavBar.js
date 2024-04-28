@@ -46,7 +46,7 @@ export default function NavBar() {
             )
           )
         }}/>
-        <Tab.Screen name="Profile" component={Profile} options={{
+        <Tab.Screen name="Profile" component={ShelterList} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>
@@ -59,7 +59,7 @@ export default function NavBar() {
             )
           )
         }}/>
-        <Tab.Screen name="Settings" component={ShelterList} options={{
+        <Tab.Screen name="Settings" component={Profile} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>
