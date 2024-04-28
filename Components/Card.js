@@ -20,7 +20,7 @@ const theme = {
     
     colors: {
       ...DefaultTheme.colors,
-      primary: "#1D4ED8",
+      primary: "#68866B",
     },
   };
 
@@ -29,7 +29,7 @@ const theme = {
     
     colors: {
       ...DefaultTheme.colors,
-      primary: "#16A34A",
+      primary: "#68866B",
     },
   };
 
@@ -83,7 +83,7 @@ const Card = ({ houseName, address, openHours, description, imageUrl, donateLink
               </Button>
               <Button
                 icon="gift" 
-                mode="contained"
+                mode="outlined"
                 theme={themeTwo}
                 style={styles.donate}
                 labelStyle={styles.donateLabel}
