@@ -122,6 +122,7 @@ export default function ShelterList() {
       },
       tabBarActiveTintColor: '#1D4ED8', // Blue color when tab is active
       tabBarInactiveTintColor: '#737373', // Grey color when tab is inactive
+      tabBarLabelStyle: { textTransform:'none' },
     })}
   >
     <Tab.Screen

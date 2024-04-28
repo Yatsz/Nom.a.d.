@@ -1,0 +1,43 @@
+[
+    {
+        "latitude": 38.544581,
+        "longitude": -121.739501,
+        "type": "petShelter"
+    },
+    {
+        "latitude": 38.564549,
+        "longitude": -121.745649,
+        "type": "petShelter"
+
+    },
+    {
+        "latitude": 38.662130,
+        "longitude": -121.730828,
+        "type": "petShelter"
+    },
+    {
+        "latitude": 38.542952,
+        "longitude": -121.74647,
+        "type": "homelessShelter"
+    },
+    {
+        "latitude": 38.554687,
+        "longitude": -121.741643,
+        "type": "homelessShelter"
+    },
+    {
+        "latitude": 38.543654,
+        "longitude": -121.739784,
+        "type": "homelessShelter"
+    },
+    {
+        "latitude": 38.546678,
+        "longitude": -121.743507,
+        "type": "homelessShelter"
+    },
+    {
+        "latitude": 38.563818,
+        "longitude": -121.730584,
+        "type": "homelessShelter"
+    }
+]
