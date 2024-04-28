@@ -96,7 +96,7 @@ export default function NewPin({ navigation, route }) {
       longitude: location.longitude,
     };
 
-
+    
 
     useEffect(() => {
         /*Geolocation.getCurrentPosition(
