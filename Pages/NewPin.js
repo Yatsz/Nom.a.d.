@@ -14,6 +14,7 @@ import uuid from 'react-native-uuid';
 import {auth, db} from "../FirebaseConfig";
 import {BlurView} from 'expo-blur'
 import qs from 'qs';
+import Geocoder from 'react-native-geocoding'
 //import Geolocation from 'react-native-geolocation-service';
 
 const ScaleInView = (props) => {
@@ -54,6 +55,8 @@ export default function NewPin({ navigation, route }) {
         }
     );
 
+    const [address, setAddress] = useState("")
+
     async function sendEmail(to, subject, body, options = {}) {
       const { cc, bcc } = options;
   
@@ -80,6 +83,14 @@ export default function NewPin({ navigation, route }) {
   
       return Linking.openURL(url);
   }
+
+  useEffect(() => {
+    Geocoder.init("AIzaSyAR7ayLlg8uWLKn1xJRVSZWJkCGry_-HeM")
+    Geocoder.from(location.latitude, location.longitude).then(data => {
+      let fetchedAddress = data.results[0].formatted_address;
+      setAddress(fetchedAddress)
+    })
+  }, [location])
 
     const [text, setText] = useState('');
 
@@ -183,7 +194,7 @@ export default function NewPin({ navigation, route }) {
                 ></BlurView>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
             <ScaleInView style={styles.addPopup}>
-              <Text style={{marginTop: 20, fontWeight: 'bold', fontSize: 30, alignSelf: 'left'}}>Pin Made!</Text>
+              <Text style={{marginTop: 20, fontWeight: 'bold', fontSize: 30, alignSelf: 'baseline'}}>Pin Made!</Text>
                 <Text style={{alignSelf: 'baseline', marginTop: 5}}>You just placed a pin to help shelters</Text>
                 <Text style={{alignSelf: 'baseline'}}>provide resources!</Text>
                 <TextInput
@@ -208,7 +219,7 @@ export default function NewPin({ navigation, route }) {
                 />
 
                 <TouchableOpacity style={styles.submitButton} onPress={async() => {
-                  body = "Hello Team," + "\n" + text + "\n\n" + "Thank you so much!";
+                  body = "Hello Team," + "\n" + text + "\n\n" + "address of pin: " + address + "\n\n" + "Thank you so much!";
                   await sendEmail(
                     'superabhi20@gmail.com',
                     'Help Needed!',
