@@ -19,7 +19,6 @@ export default function NavBar() {
 
 
   return (
-    <NavigationContainer>
       <Tab.Navigator 
         screenOptions={{
             headerShown: false,
@@ -37,49 +36,48 @@ export default function NavBar() {
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>
-                <Image source={pinIconSelected} style={{width: 25, height: 25}}/>
+                <Image source={pinIconSelected} style={{width: 35, height: 35}}/>
               </View>
             ) : (
               <View>
-                <Image source={pinIcon} style={{width: 25, height: 25}}/>
+                <Image source={pinIcon} style={{width: 35, height: 35}}/>
               </View>
             )
           )
         }}/>
-        <Tab.Screen name="Profile" component={Profile} options={{
+        <Tab.Screen name="Profile" component={ShelterList} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>
-                <Image source={homeIconSelected} style={{width: 25, height: 25}}/>
+                <Image source={homeIconSelected} style={{width: 30, height: 30}}/>
               </View>
             ) : (
               <View>
-                <Image source={homeIcon} style={{width: 25, height: 25}}/>
+                <Image source={homeIcon} style={{width: 30, height: 30}}/>
               </View>
             )
           )
         }}/>
-        <Tab.Screen name="Settings" component={ShelterList} options={{
+        <Tab.Screen name="Settings" component={Profile} options={{
           tabBarIcon: ({focused}) => (
             focused ? (
               <View>
-                <Image source={profileIconSelected} style={{width: 25, height: 25}}/>
+                <Image source={profileIconSelected} style={{width: 30, height: 30}}/>
               </View>
             ) : (
               <View>
-                <Image source={profileIcon} style={{width: 25, height: 25}}/>
+                <Image source={profileIcon} style={{width: 30, height: 30}}/>
               </View>
             )
           )
         }}/>
       </Tab.Navigator>
-    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: "#7F5DF0",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
