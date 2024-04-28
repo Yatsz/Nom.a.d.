@@ -24,6 +24,7 @@ const ihop = `https://images.crunchbase.com/image/upload/c_pad,h_256,w_256,f_aut
 const ProfileHeader = ({pin, name}) => {
 
   let avatar = "";
+  console.log(pin)
 
   let arr = name.split(" ")
   console.log(arr)
@@ -57,19 +58,39 @@ const Profile = ({route}) => {
 
   const [left, setLeft] = useState(true);
 
+  const [pinCount, setPinCount] = useState(0)
+  const [email, setEmail] = useState(route.params.email)
+
+  const getPins = async() => {
+    
+    const docRef = doc(db, "users", email);
+    const docSnap = await getDoc(docRef);
+
+    let num = docSnap.data().pins
+    setPinCount(num);
+  }
+
+  count = 0;
+  count++
+
+  useEffect(() => {
+    setEmail(route.params.email)
+    getPins()
+  })
+
   return (
     <>
-    <ProfileHeader pin={route.params.pinCount} name={route.params.personName} />
+    <ProfileHeader pin={pinCount} name={route.params.personName} />
     <View style={{marginTop: 50, flexDirection: 'row', justifyContent: 'center'}}>
       <TouchableOpacity onPress={() => {
         setLeft(true)
-      }} style={left ? {backgroundColor: "#fff", padding: 10, borderTopRightRadius: 30, borderTopLeftRadius: 30, width: '50%', height: 41, alignItems: 'center'} : {backgroundColor: "#68866B", padding: 10, borderTopRightRadius: 30, borderTopLeftRadius: 30, width: '50%', height: 41, alignItems: 'center'}}>
-        <Text style={left ? {fontSize: 18, fontWeight: 'bold'} : {fontSize: 18, color: '#fff', fontWeight: 'bold'}}>Volunteer</Text>
+      }} style={!left ? {backgroundColor: "#fff", padding: 10, borderTopRightRadius: 30, borderTopLeftRadius: 30, width: '50%', height: 41, alignItems: 'center'} : {backgroundColor: "#68866B", padding: 10, borderTopRightRadius: 30, borderTopLeftRadius: 30, width: '50%', height: 41, alignItems: 'center'}}>
+        <Text style={!left ? {fontSize: 18, fontWeight: 'bold'} : {fontSize: 18, color: '#fff', fontWeight: 'bold'}}>Volunteer</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={!left ? {backgroundColor: "#fff", padding: 10, borderTopRightRadius: 30, borderTopLeftRadius: 30, width: '50%', height: 41, alignItems: 'center'} : {backgroundColor: "#68866B", padding: 10, borderTopRightRadius: 30, borderTopLeftRadius: 30, width: '50%', height: 41, alignItems: 'center'}} onPress={() => {
+      <TouchableOpacity style={left ? {backgroundColor: "#fff", padding: 10, borderTopRightRadius: 30, borderTopLeftRadius: 30, width: '50%', height: 41, alignItems: 'center'} : {backgroundColor: "#68866B", padding: 10, borderTopRightRadius: 30, borderTopLeftRadius: 30, width: '50%', height: 41, alignItems: 'center'}} onPress={() => {
         setLeft(false)
       }}>
-        <Text style={left ? {fontSize: 18,  color: '#fff', fontWeight: 'bold'} : {fontSize: 18, fontWeight: 'bold'}}>Coupons Earned</Text>
+        <Text style={!left ? {fontSize: 18,  color: '#fff', fontWeight: 'bold'} : {fontSize: 18, fontWeight: 'bold'}}>Coupons Earned</Text>
       </TouchableOpacity>
     </View>
     {
